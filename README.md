@@ -7,7 +7,7 @@
 
 ![Static Badge](https://img.shields.io/badge/PythonSnippets-GitHub?style=plastic&logo=github&logoSize=auto&labe=GitHub&labelColor=navy) 
 ![GitHub License](https://img.shields.io/github/license/ktalexan/pythonsnippets?style=plastic&labelcolor=black) 
-![Shield Badge: Language-Julia](https://img.shields.io/static/v1?style=plastic&label=language&message=Julia&logo=julia&color=purple&labelColor=black) 
+![Shield Badge: Language-Python](https://img.shields.io/static/v1?style=plastic&label=language&message=Python&logo=python&color=forestgreen&logoColor=blue&labelColor=black)
 
 </div>
 
