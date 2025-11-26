@@ -17,5 +17,5 @@ This repository contains a collection of Python code snippets designed to assist
 
 ## 📂 List of Snippets
 
-- **🐍 haversine.py**: It provides a python code snippet to calculate the Haversine distance between two geographic coordinates (latitude and longitude) on the Earth's surface.
+- **✨ haversine.py**: It provides a python code snippet to calculate the Haversine distance between two geographic coordinates (latitude and longitude) on the Earth's surface.
  
