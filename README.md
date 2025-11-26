@@ -14,3 +14,8 @@
 ----
 
 This repository contains a collection of Python code snippets designed to assist developers in writing efficient and effective Python code. The snippets cover a wide range of topics, from basic syntax to advanced programming techniques.
+
+## 📂 List of Snippets
+
+- **🐍 haversine.py**: It provides a python code snippet to calculate the Haversine distance between two geographic coordinates (latitude and longitude) on the Earth's surface.
+ 
