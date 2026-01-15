@@ -1,24 +1,23 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Python Snippet: Haversine Formula Implementation
+# Python Snippet: Haversine Formula Implementation ----
 # Description: This code calculates the great-circle distance between two points
 #              on the Earth's surface given their latitude and longitude using
 #              the Haversine formula.
 # Author: OpenAI ChatGPT, Dr. Kostas Alexandridis
-# Date: 2024-06-15
+# Date: June 2024
 # License: MIT License
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# region Import Libraries
+## Import Libraries ----
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import math
 
-# endregion
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# region Haversine Function
+## Haversine Function ----
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def haversine(lat1, lon1, lat2, lon2, units: str = 'km') -> float:
     """haversine: Haversine formula implementation
@@ -66,11 +65,9 @@ def haversine(lat1, lon1, lat2, lon2, units: str = 'km') -> float:
     
     return distance
 
-# endregion
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# region Example Usage
+## Example Usage ----
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if __name__ == "__main__":
@@ -86,10 +83,7 @@ if __name__ == "__main__":
     print(f"Distance between {place1} and {place2}: {distance_km:,.2f} km")
     print(f"Distance between {place1} and {place2}: {distance_miles:,.2f} miles")
 
-# endregion
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# region End of File
+# End of Script ----
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# endregion
