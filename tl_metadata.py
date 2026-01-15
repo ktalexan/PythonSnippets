@@ -31,9 +31,6 @@ def tl_metadata_from_path(path: str, export = False) -> dict:
     # Initialize metadata dictionary
     metadata = {}
 
-    # Extract components from the path
-    base_name = os.path.basename(path)
-
     # Read all directories in the path
     directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
     if "tl_xxxx" in directories:
@@ -49,7 +46,7 @@ def tl_metadata_from_path(path: str, export = False) -> dict:
         year = d.split("_")[1]
         
         #Populate the metadata dictionary for each folder year
-        metadata[year] = {"folder": d, "year": int(year)}
+        metadata[year] = {"folder": d, "year": int(year), "path": d_path}
 
         # Get the directories inside each d_path
         tl_levels = [sd for sd in os.listdir(d_path) if os.path.isdir(os.path.join(d_path, sd))]
@@ -97,6 +94,7 @@ def tl_metadata_from_path(path: str, export = False) -> dict:
                 # Populate the metadata dictionary for each file
                 metadata[year]["levels"][level]["type"] = f_type
                 metadata[year]["levels"][level]["file"] = f
+                metadata[year]["levels"][level]["path"] = level_path
                 metadata[year]["levels"][level]["year"] = int(file_year)
                 metadata[year]["levels"][level]["scale"] = spatial_level
                 metadata[year]["levels"][level]["spatial"] = file_spatial
