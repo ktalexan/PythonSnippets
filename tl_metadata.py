@@ -33,8 +33,6 @@ def tl_metadata_from_path(path: str, export = False) -> dict:
 
     # Read all directories in the path
     directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-    if "tl_xxxx" in directories:
-        directories.remove("tl_xxxx")
 
     # Loop through each directory to extract metadata
     for d in directories:
