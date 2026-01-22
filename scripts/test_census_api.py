@@ -4,6 +4,8 @@ import json
 import requests
 import pandas as pd
 import pytidycensus as tc
+from census import Census
+from us import states
 from dotenv import load_dotenv
 load_dotenv()
 from scripts.CensusAPI import ACSAPI
@@ -19,6 +21,10 @@ print(data.head())
 
 
 
+c = Census(os.getenv("CENSUS_API_KEY"))
+c.acs5.tables()
+
+c.acs5.state(("NAME", "B01001_001E"), states.CA.fips, year = 2022)
 
 
 
