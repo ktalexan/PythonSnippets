@@ -35,6 +35,111 @@ df = tc.get_acs(
     geometry = True
 )
 
+demo_vars = {
+    "Total_Population": "B01003_001",
+    "Median_Household_Income": "B19013_001", 
+    "Median_Home_Value": "B25077_001"
+}
+
+df = tc.get_acs(
+    geography = "tract",
+    variables = demo_vars,
+    state = "CA",
+    county = "Orange",
+    year = 2022,
+    geometry = True
+)
+
+
+# Get 2020 Census population data
+pop_2020 = tc.get_decennial(
+    geography = "county",
+    variables = {"TPOP": "P1_001N"},
+    year = 2020,
+    state = "CA",
+    county = "Orange",
+    geometry = True
+)
+
+print(pop_2020.head())
+
+
+var_dict = {
+    "demographic": {
+        "pop": {
+            "id": "B01003_001",
+            "alias": "Total Population"
+        },
+        "male": {
+            "id": "B01001_002",
+            "alias": "Male Population"
+        },
+        "female": {
+            "id": "B01001_026",
+            "alias": "Female Population"
+        }
+    },
+    "social": {
+
+    },
+    "economic": {
+
+    },
+    "housing": {
+
+    }
+}
+
+use_vars = {key: value["id"] for key, value in var_dict["demographic"].items()}
+
+
+df = tc.get_acs(
+    geography = "tract",
+    variables = use_vars,
+    state = "CA",
+    county = "Orange",
+    survey = "acs5",
+    year = 2022,
+    geometry = True
+)
+print(df)
+
+df = tc.get_acs(
+    geography = "county",
+    variables = use_vars,
+    state = "CA",
+    county = "Orange",
+    survey = "acs5",
+    year = 2022,
+    geometry = True
+)
+print(df)
+
+df = tc.get_acs(
+    geography = "place",
+    variables = use_vars,
+    state = "06",
+    county = "059",
+    survey = "acs5",
+    year = 2022,
+    geometry = True
+)
+print(df)
+
+df = tc.get_acs(
+    geography = "block group",
+    variables = "B01003_001",
+    survey = "acs5",
+    year = 2022,
+    geometry = True
+)
+print(df)
+
+
+
+print(df)
+
+df.columns
 
 
 import urllib.request
