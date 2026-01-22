@@ -1,7 +1,9 @@
 import os
+import sys
+import json
 import requests
 import pandas as pd
-import json
+import pytidycensus as tc
 from dotenv import load_dotenv
 load_dotenv()
 from scripts.CensusAPI import ACSAPI
@@ -14,6 +16,24 @@ variables = ["B01001_001E"]
 geo = "tract:*"
 data = acs.fetch_data(variables, geo)
 print(data.head())
+
+
+
+
+
+
+api_key = os.getenv("CENSUS_API_KEY")
+tc.set_census_api_key(api_key)
+#tc.set_census_api_key(api_key, install = True)
+
+df = tc.get_acs(
+    geography = "tract",
+    variables = ["B01001_001E"],
+    state = "CA",
+    county = "Orange",
+    year = 2022,
+    geometry = True
+)
 
 
 
