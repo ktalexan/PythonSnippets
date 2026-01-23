@@ -1,11 +1,14 @@
 import os
 import sys
 import json
+import urllib.request
+import urllib.parse
 import requests
 import pandas as pd
-import pytidycensus as tc
-from census import Census
-from us import states
+
+#import pytidycensus as tc
+#from census import Census
+#from us import states
 from dotenv import load_dotenv
 load_dotenv()
 from scripts.CensusAPI import ACSAPI
@@ -235,76 +238,58 @@ host_name = f"https://api.census.gov/data/{year}/{dataset[0]}/{dataset[0]}{datas
 
 
 
-for key, value in geographies.items():
-    if key == "for":
-        host_name = f"{host_name}&for={value["level"]}:{value["value"]}"
-    elif key == "in":
-        host_name = f"{host_name}&in={value["level"]}:{value["value"]}"
+# manual: https://www2.census.gov/data/api-documentation/api-user-guide.pdf
 
-
-def fetch_census(year: int, table_id: str, var_id: str = None, geography: str = "county"):
-    """Fetch JSON from the Census API using urllib (no external deps).
-
-    Args:
-        get_vars: comma-separated variables for `get` param.
-        for_clause: the `for` query value (e.g., 'county:059').
-        in_clause: the `in` query value (e.g., 'state:06').
-
-    Returns:
-        Parsed JSON response.
-
-    Raises:
-        urllib.error.HTTPError on HTTP failures.
-        json.JSONDecodeError if response isn't valid JSON.
-    """
+def fetch_census(year: int, dataset: list, var_dict: dict, geography: dict):
     year = str(year)
+    api_key = os.getenv("CENSUS_API_KEY")
 
-    # If var_id is provided, construct get_vars accordingly
-    get_vars = f"NAME,group({table_id})"
-    if var_id:
-        get_vars = f"NAME,{table_id}_{var_id}"
-
-    base = f"https://api.census.gov/data/{year}/acs/acs5/subject"
+    match var_dict["type"]:
+        case "list":
+            var_string = f"GEO_ID,NAME,{",".join(var_dict["data"])}"
+        case "group":
+            var_string = f"GEO_ID,NAME,group({var_dict["data"]})"
 
     match geography:
         case "county":
             params = {
-                "get": get_vars,
+                "get": var_string,
                 "for": "county:059",
-                "in": "state:06"
+                "in": "state:06",
+                "key": api_key
             }
         case "cousub":
             params = {
-                "get": get_vars,
+                "get": var_string,
                 "for": "county subdivision:*",
-                "in": ["state:06", "county:059"]
+                "in": ["state:06", "county:059"],
+                "key": api_key
             }
         case "tract":
             params = {
-                "get": get_vars,
+                "get": var_string,
                 "for": "tract:*",
-                "in": ["state:06", "county:059"]
+                "in": ["state:06", "county:059"],
+                "key": api_key
             }
         case "place":
             params = {
-                "get": get_vars,
+                "get": var_string,
                 "for": "place:*",
-                "in": "state:06"
+                "in": ["state:06", "county:059"],
+                "key": api_key
             }
-        case "consolidated city":
+        case "block group":
             params = {
-                "get": get_vars,
-                "for": "consolidated city:*",
-                "in": "state:06"
-            }
-        case "congressional district":
-            params = {
-                "get": get_vars,
-                "for": "congressional district:*",
-                "in": "state:06"
+                "get": var_string,
+                "for": "block group:*",
+                "in": ["state:06", "county:059"],
+                "key": api_key
             }
         case _:
-            raise ValueError(f"Unsupported geography: {geography}")
+            raise ValueError(f"Invalid geography: {geography}")
+
+    base = f"https://api.census.gov/data/{year}/{dataset[0]}/{dataset[0]}{dataset[1]}"
 
     # Use doseq=True so sequence values (like multiple `in` clauses)
     # produce repeated query keys: &in=state:06&in=county:059
@@ -330,40 +315,28 @@ def fetch_census(year: int, table_id: str, var_id: str = None, geography: str = 
             pass
         raise
 
+year = 2023
+dataset = ["acs", 5]
+var_dict = {
+    "type": "list",
+    "data": ["B01003_001E", "B01001_002E", "B01001_026E"]
+}
 
-data = fetch_census(year = 2023, table_id = "S0101", var_id = "C01_001E", geography = "county")
+data = fetch_census(year = year, dataset = dataset, var_dict = var_dict, geography = "county")
 print(json.dumps(data, indent=4))
 
-data = fetch_census(year = 2023, table_id = "S0101", var_id = "C01_001E", geography = "cousub")
+data = fetch_census(year = year, dataset = dataset, var_dict = var_dict, geography = "cousub")
 print(json.dumps(data, indent=4))
 
-data = fetch_census(year = 2023, table_id = "S0101", var_id = "C01_001E", geography = "tract")
+data = fetch_census(year = year, dataset = dataset, var_dict = var_dict, geography = "tract")
 print(json.dumps(data, indent=4))
 
-data = fetch_census(year = 2023, table_id = "S0101", var_id = "C01_001E", geography = "place")
+data = fetch_census(year = year, dataset = dataset, var_dict = var_dict, geography = "block group")
 print(json.dumps(data, indent=4))
+# Length of data
+print(len(data))
 
-data = fetch_census(year = 2023, table_id = "S0101", var_id = "C01_001E", geography = "congressional district")
+
+data = fetch_census(year = year, dataset = dataset, var_dict = var_dict, geography = "place")
 print(json.dumps(data, indent=4))
-
-
-data2 = fetch_census(year = 2010, table_id = "S0101", geography = "county")
-print(json.dumps(data2, indent=4))
-
-
-
-def fetch_acs_variables(year: int):
-    """Fetch ACS variable metadata using requests (external dependency)."""
-    url = f"https://api.census.gov/data/{year}/acs/acs5/variables.json"
-    resp = requests.get(url)
-    resp.raise_for_status()
-    return resp.json()
-
-acs_vars_2023 = fetch_acs_variables(2023)
-print(json.dumps(acs_vars_2023, indent=4))
-
-# Convert the acs_vars_2023 dict to a pandas DataFrame for easier viewing, where the keys are the variable rows and the values are the columns.
-import pandas as pd
-df = pd.DataFrame.from_dict(acs_vars_2023['variables'], orient='index')
-print(df)
 
