@@ -19,44 +19,39 @@ geo = "tract:*"
 data = acs.fetch_data(variables, geo)
 print(data.head())
 
-
+fields = ("GEO_ID", "NAME", "B01003_001E")
 
 c = Census(os.getenv("CENSUS_API_KEY"))
 tables_dict = c.acs5.tables()
 print(json.dumps(tables_dict, indent=4))
-c.acs5.state(("GEO_ID", "NAME", "B01001_001E"), states.CA.fips, year = 2022)
-
-c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), {"for": "state:{}".format(states.CA.fips)}, {"in": "county: 059"}, year = 2022)
-
-data = c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), {'for': 'state:{}'.format(states.CA.fips)}, year = 2010)
-
-data = c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), {'for': 'state:{}'.format(states.CA.fips)}, year = 2020)
-
-data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'county subdivision:*', 'in': 'state:{} county:059'.format(states.CA.fips)}, year = 2020)
-print(len(data))
-
-data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'tract:*', 'in': 'state:{} county:059'.format(states.CA.fips)}, year = 2020)
-print(len(data))
 
 
-data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'block group:*', f'in': f'state:{states.CA.fips} county:059'}, year = 2020)
-print(len(data))
+# Orange County
+county_data = c.acs5.get(fields, geo={"for": "county:059", "in": f"state:{states.CA.fips}"})
+print(county_data)
+print(len(county_data))
 
 
-data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'zip code tabulation area:92866,92867'}, year = 2020)
-print(len(data))
-print(data)
+c.acs5.state_county(fields, states.CA.fips, "059", year = 2022)
+c.acs5.state_county_subdivision(fields, states.CA.fips, "059", Census.ALL, year = 2022)
+c.acs5.state_county_blockgroup(fields, states.CA.fips, "059", Census.ALL, year = 2022)
+c.acs5.state_county_tract(fields, states.CA.fips, "059", Census.ALL, year = 2022)
+c.acs5.state_place(fields, states.CA.fips, Census.ALL, year = 2022)
 
-zip_codes = ['92866', '92867']
-data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'zip code tabulation area:{}'.format(','.join(zip_codes))}, year = 2020)
-print(len(data))
-print(data)
+c.acs5.state_county_blockgroup(fields, states.CA.fips, "059", Census.ALL, year = 2013)
 
 
-zip_codes = ['92866', '92867']
-data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': f'zip code tabulation area: {",".join(zip_codes)}'}, year = 2020)
-print(len(data))
-print(data)
+# County Subdivisions
+cousub_data = c.acs5.get(fields, geo={"for": "county subdivision:*", "in": [f"state:{states.CA.fips}", "county:059"]}, year = 2010)
+print(cousub_data)
+print(len(cousub_data))
+
+
+# Block Groups
+blockgroup_data = c.acs5.get(fields, geo={"for": "block group:*", "in": [f"state:{states.CA.fips}", "county:059", "tract:*"]}, year = 2010)
+print(blockgroup_data)
+print(len(blockgroup_data))
+
 
 #https://api.census.gov/data/2023/acs/acs5?get=NAME,B01001_001E&for=block%20group:*&in=state:06&in=county:073&in=tract:*
 
@@ -64,31 +59,48 @@ api_key = os.getenv("CENSUS_API_KEY")
 tc.set_census_api_key(api_key)
 #tc.set_census_api_key(api_key, install = True)
 
-df = tc.get_acs(
-    geography = "tract",
-    variables = ["B01001_001E"],
-    state = "CA",
-    county = "Orange",
-    year = 2022,
-    geometry = True
-)
-print(df.head())
-
 demo_vars = {
     "Total_Population": "B01003_001",
     "Median_Household_Income": "B19013_001", 
     "Median_Home_Value": "B25077_001"
 }
+df_year = 2020
 
-df = tc.get_acs(
-    geography = "tract",
+df_county = tc.get_acs(
+    geography = "county",
     variables = demo_vars,
+    year = df_year,
+    survey = "acs5",
     state = "CA",
     county = "Orange",
-    year = 2022,
-    geometry = True
+    geometry = True,
+    keep_geo_vars = True
 )
-print(df.head())
+print(df_county)
+
+df_subdivision = tc.get_acs(
+    geography = "county subdivision",
+    variables = demo_vars,
+    year = df_year,
+    survey = "acs5",
+    state = "CA",
+    county = "Orange",
+    geometry = True,
+    keep_geo_vars = True
+)
+print(df_subdivision)
+
+df_tract = tc.get_acs(
+    geography = "tract",
+    variables = demo_vars,
+    year = df_year,
+    survey = "acs5",
+    state = "CA",
+    county = "Orange",
+    geometry = True,
+    keep_geo_vars = True
+)
+print(df_tract)
 
 df = tc.get_acs(
     geography = "block group:*",
@@ -203,6 +215,31 @@ import requests
 
 # Year used in the Census API path (appears after /data/)
 year = 2023
+dataset = ["acs", 5]
+var_list = ["B01003_001E", "B01001_002E", "B01001_026E"]
+geographies = {
+    "for": {"level": "county", "value": "059"},
+    "in": {"level": "state", "value": "06"},
+}
+api_key = os.getenv("CENSUS_API_KEY")
+
+# Geographies
+if "for" in geographies:
+    geo = f"&for={geographies["for"]["level"]}:{geographies["for"]["value"]}"
+if "in" in geographies:
+    geo = f"{geo}&in={geographies["in"]["level"]}:{geographies["in"]["value"]}"
+
+
+host_name = f"https://api.census.gov/data/{year}/{dataset[0]}/{dataset[0]}{dataset[1]}?get=GEO_ID,NAME,{",".join(var_list)}{geo}&key={api_key}"
+
+
+
+
+for key, value in geographies.items():
+    if key == "for":
+        host_name = f"{host_name}&for={value["level"]}:{value["value"]}"
+    elif key == "in":
+        host_name = f"{host_name}&in={value["level"]}:{value["value"]}"
 
 
 def fetch_census(year: int, table_id: str, var_id: str = None, geography: str = "county"):
