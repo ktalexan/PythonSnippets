@@ -22,11 +22,43 @@ print(data.head())
 
 
 c = Census(os.getenv("CENSUS_API_KEY"))
-c.acs5.tables()
+tables_dict = c.acs5.tables()
+print(json.dumps(tables_dict, indent=4))
+c.acs5.state(("GEO_ID", "NAME", "B01001_001E"), states.CA.fips, year = 2022)
 
-c.acs5.state(("NAME", "B01001_001E"), states.CA.fips, year = 2022)
+c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), {"for": "state:{}".format(states.CA.fips)}, {"in": "county: 059"}, year = 2022)
+
+data = c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), {'for': 'state:{}'.format(states.CA.fips)}, year = 2010)
+
+data = c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), {'for': 'state:{}'.format(states.CA.fips)}, year = 2020)
+
+data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'county subdivision:*', 'in': 'state:{} county:059'.format(states.CA.fips)}, year = 2020)
+print(len(data))
+
+data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'tract:*', 'in': 'state:{} county:059'.format(states.CA.fips)}, year = 2020)
+print(len(data))
 
 
+data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'block group:*', f'in': f'state:{states.CA.fips} county:059'}, year = 2020)
+print(len(data))
+
+
+data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'zip code tabulation area:92866,92867'}, year = 2020)
+print(len(data))
+print(data)
+
+zip_codes = ['92866', '92867']
+data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': 'zip code tabulation area:{}'.format(','.join(zip_codes))}, year = 2020)
+print(len(data))
+print(data)
+
+
+zip_codes = ['92866', '92867']
+data =c.acs5.get(('GEO_ID', 'NAME', 'B01003_001E'), geo = {'for': f'zip code tabulation area: {",".join(zip_codes)}'}, year = 2020)
+print(len(data))
+print(data)
+
+#https://api.census.gov/data/2023/acs/acs5?get=NAME,B01001_001E&for=block%20group:*&in=state:06&in=county:073&in=tract:*
 
 api_key = os.getenv("CENSUS_API_KEY")
 tc.set_census_api_key(api_key)
@@ -40,6 +72,7 @@ df = tc.get_acs(
     year = 2022,
     geometry = True
 )
+print(df.head())
 
 demo_vars = {
     "Total_Population": "B01003_001",
@@ -55,6 +88,18 @@ df = tc.get_acs(
     year = 2022,
     geometry = True
 )
+print(df.head())
+
+df = tc.get_acs(
+    geography = "block group:*",
+    variables = demo_vars,
+    state = "CA",
+    county = "Orange",
+    year = 2022,
+    geometry = True
+)
+print(df.head())
+
 
 
 # Get 2020 Census population data
