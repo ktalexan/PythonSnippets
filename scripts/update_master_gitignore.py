@@ -1,0 +1,1 @@
+# This script updates the master .gitignore file with necessary ignores for sensitive files.

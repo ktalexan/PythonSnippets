@@ -15,20 +15,30 @@ trigger: always_on
 ## Code formatting
 
 - Use a linter to enforce code formatting rules
-- Always add spaces around operators, including `=`, `+`, `-`, `*`, `/`, and `%`.
+- Always add spaces around operators, including `=`, `+`, `-`, `*`, `/`, and `%`. Apply this rule on everything, including pasting code snippets, even if the original code does not have spaces around operators.
 - Always add spaces after commas in lists, dictionaries, and function arguments
-- Use `black` for Python code formatting
+- Always use docstrings for all private and public functions and classes and follow the google-style docstring format as described below in the docstrings section.
+- In Python, use `is` for comparison to `None` (e.g., `if variable is None:`)
+- In Python, use `==` for comparison to other values (e.g., `if variable == value:`)
+- In Python, use `with` statements for file handling to ensure proper resource management
+- In Python, use `enumerate()` for iterating over lists with index
+- In Python, use `zip()` for iterating over multiple lists in parallel
+- In Python, use list comprehensions for creating lists from existing lists
+- In Python, use `set()` for creating sets from existing lists
+- In Python, use `dict()` for creating dictionaries from existing lists.
 - Always wrap lines in code.
 - Do not break lines longer than 79 characters.
 - Do not break long strings into multiple lines.
+- Do not break long comma separated lists into multiple lines.
+- Do not break long comma separated dictionary lists into multiple lines.
+- Always add spaces after commas in lists, dictionaries, and function arguments.
 
 ## Naming conventions
 
-- If the programming language is Python, use instead the naming conventions described in the Python code style and naming conventions section below.
-- Use snake_case for variables, dictionaries, pandas data frames, numpy, arrays, functions, and methods
-- Use PascalCase for component names, interfaces, and type aliases
+- Use snake_case for Python variables, functions, modules, dictionaries, pandas data frames, numpy, arrays, and methods
+- Use PascalCase for Python classes or class names, components, interfaces, type aliases, and exceptions
+- Use ALL_CAPS for constants and globals (e.g., `MAX_LENGTH`)
 - Prefix private class members with an underscore (e.g., `_privateMember`)
-- use ALL_CAPS for constants (e.g., `MAX_LENGTH`)
 
 ## Error handling
 
@@ -38,30 +48,8 @@ trigger: always_on
 
 ## Docstrings
 
-- Use google-style docstrings for all public functions and classes
-- Include parameter types, return types, and a description of the function's purpose
-- Always include Args, Returns, Raises, and Examples sections in docstrings
+- Use google-style docstrings for all private and public functions and classes
+- Include a brief summary of the function or class at the beginning of the docstring, followed by more detailed information if necessary
+- Add sections for Args, Returns, Raises, Examples, and Note as needed.
+- Include parameter types, return types, and a description of the function's purpose.
 - Try to keep docstrings concise and informative
-
-## Python code style and naming conventions
-
-- Use snake_case for Python variables, functions, modules, dictionaries, pandas data frames, numpy, arrays, and methods
-- Use PascalCase for Python classes or class names, components, and exceptions
-- Use ALL_CAPS for constants and globals (e.g., `MAX_LENGTH`)
-- Always use docstrings for all public functions and classes and follow the google-style docstring format as described above.
-- Use `is` for comparison to `None` (e.g., `if variable is None:`)
-- Use `==` for comparison to other values (e.g., `if variable == value:`)
-- Use `with` statements for file handling to ensure proper resource management
-- Use `enumerate()` for iterating over lists with index
-- Use `zip()` for iterating over multiple lists in parallel
-- Use list comprehensions for creating lists from existing lists
-- Use `set()` for creating sets from existing lists
-- Use `dict()` for creating dictionaries from existing lists.
-- Do not break lines longer than 79 characters.
-- Do not break long strings into multiple lines.
-- Do not break long comma separated lists into multiple lines.
-- Do not break long comma separated dictionary lists into multiple lines.
-- Always wrap lines in code.
-- Always use 4 spaces for indentation.
-- Always add spaces around operators, including `=`, `+`, `-`, `*`, `/`, and `%`.
-- Always add spaces after commas in lists, dictionaries, and function arguments.
