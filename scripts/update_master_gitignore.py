@@ -37,9 +37,23 @@ def update_gitignore_files(
         This function assumes that the master .gitignore file is located in the current working directory.
     """
     # Get the content of the current `.gitignore` file in the current working directory
-    current_env_path = os.path.join(os.getcwd(), ".gitignore")
-    with open(current_env_path, "r", encoding = "utf-8") as f:
-        current_env_content = f.read()
+    current_gitignore_path = os.path.join(os.getcwd(), ".gitignore")
+    with open(current_gitignore_path, "r", encoding = "utf-8") as f:
+        current_gitignore_content = f.read()
+    
+    # Split the content into two parts: the main content, and the project folders content
+    # Helper function to split the .gitignore content
+    def _split_gitignore_content(content: str, split_marker: str = "# Project Folder Exceptions"):
+        start_index = content.find(split_marker)
+        if start_index != -1:
+            main_content = content[:start_index]
+            project_content = content[start_index:]
+            return main_content, project_content
+        else:
+            return content, ""
+    
+    # Split the current .gitignore content and get only the main content
+    current_main_content, _ = _split_gitignore_content(current_gitignore_content)
 
     # Get the path one level up from the current project working directory
     project_root = os.path.abspath(os.path.join(os.getcwd(), ".."))
@@ -51,7 +65,6 @@ def update_gitignore_files(
 
     # Define an empty list for folders to check
     folders = []
-
 
     # Determine the folders to check
     if project_name is None:
@@ -72,32 +85,39 @@ def update_gitignore_files(
         for folder in folders:
             print(f"\nChecking folder: {folder}")
             # Check if there is an `.gitignore` folder in the folder
-            env_path = os.path.join(project_root, folder, ".gitignore")
+            gitignore_path = os.path.join(project_root, folder, ".gitignore")
 
             # Check if the .gitignore file exists
-            if os.path.exists(env_path):
-                print(f"- Found .gitignore in {folder}: {env_path}")
-                with open(env_path, "r", encoding = "utf-8") as f:
+            if os.path.exists(gitignore_path):
+                print(f"- Found .gitignore in {folder}: {gitignore_path}")
+                with open(gitignore_path, "r", encoding = "utf-8") as f:
                     content = f.read()
-                
-                # Compare the content with the current `.gitignore` file
-                if content != current_env_content:
-                    print(f"- The content of the `.gitignore` file in {folder} is different from the current `.gitignore` file.")
+
+                # Split the remote .gitignore content
+                remote_main_content, remote_project_content = _split_gitignore_content(content)
+
+                # Put together the updated content (leaving the project exceptions intact)
+                updated_content = current_main_content + remote_project_content
+                #rint(updated_content, end = '')
+
+                # Compare the main content with the current main `.gitignore` file
+                if remote_main_content != current_main_content:
+                    print(f"- The main content of the `.gitignore` file in {folder} is different from the current `.gitignore` file.")
 
                     # Update the .gitignore file in the folder to match the current .gitignore file
                     print(f"- Updating `.gitignore` file in {folder} to match the current `.gitignore` file.")
-                    with open(env_path, "w", encoding = "utf-8") as f:
-                        f.write(current_env_content)
+                    with open(gitignore_path, "w", encoding = "utf-8") as f:
+                        f.write(updated_content)
                         print(f"Updated .gitignore file in {folder} to match the current .gitignore file.")
                 else:
-                    print(f"The content of the `.gitignore` file in {folder} is the same as the current `.gitignore` file.")
+                    print(f"The main content of the `.gitignore` file in {folder} is the same as the current `.gitignore` file.")
             else:
                 print(f"- No .gitignore file found in {folder}.")
                 # Checking the create_if_missing flag to create the .gitignore file if it doesn't exist
                 if create_if_missing:
                     print(f"- Creating .gitignore file in {folder}.")
-                    with open(env_path, "w", encoding = "utf-8") as f:
-                        f.write(current_env_content)
+                    with open(gitignore_path, "w", encoding = "utf-8") as f:
+                        f.write(updated_content)
                 else:
                     print(f"- Skipping creation of .gitignore file in {folder}.")
 
@@ -108,7 +128,7 @@ def update_gitignore_files(
 if __name__ == "__main__":
     # Example usage: Update .gitignore files in the current directory and its subdirectories
     # This will create .gitignore files in all subdirectories of the project that don't have one.
-    update_env_files()
+    update_gitignore_files()
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
