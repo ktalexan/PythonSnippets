@@ -1,20 +1,5 @@
-# Scripts Folder
+# PythonSnippets Scripts Repository Folder
 
-This folder contains scripts for testing and demonstrating the use of the Census API.
-
-
-## Scripts Notes
-
-### 📜 test_census_api.py
-This script tests the Census API by fetching data for a specific year, dataset, and geographic level.
-
-### 📜 CensusAPI.py
-This script provides a class for interacting with the Census API.
-
-### 📓 README.md
-This file provides a description of the scripts in this folder.
-
-### 📚 Census API Guide
-
-- [Census API Guide (link)](https://www.census.gov/data/developers/guidance/api-user-guide.html): This is the official Census API guide website.
-- [Census API Documentation (pdf)](https://www2.census.gov/data/api-documentation/api-user-guide.pdf): This is the official Census API documentation in pdf format.
+This folder contains reusable scripts and functions that are utilized across various parts of the project. These scripts are designed to be modular and can be imported or executed as needed to perform specific tasks or operations within the project workflow.
+They may include utility functions, data processing routines, or other common functionalities that support the overall project objectives.
+These scripts are intended to enhance code reusability, maintainability, and efficiency throughout the project lifecycle.

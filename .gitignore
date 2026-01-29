@@ -214,6 +214,8 @@ sys.*
 admin/**
 !admin/**/
 !admin/**/README.md
+!admin/**/repository_notes.md
+!admin/**/repo_vars.json
 
 data/**
 !data/**/
