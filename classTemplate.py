@@ -12,7 +12,7 @@
 from __future__ import annotations
 import os
 import sys
-import datetime as dt
+import datetime
 from pathlib import Path
 import json
 import re
@@ -87,7 +87,7 @@ class DualOutput:
     ## fx: Enable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None):
-        logid = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+        logid = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         if self._orig is not None:
             return
         # Prefer provided meta, otherwise use stored meta
@@ -109,21 +109,21 @@ class DualOutput:
         self._orig = sys.stdout
         self._log = self._open_log(meta, fn)
         sys.stdout = self
-        self._start_time = dt.datetime.now()
+        self._start_time = datetime.datetime.now()
 
         if self._filetype == "markdown":
             print("----\n")
-            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {dt.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
+            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {datetime.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
         else:
             print(f"---- Start of log ID: {logid} ----")
-            print(f"Date: {dt.datetime.now().strftime('%B %d, %Y')}")
+            print(f"Date: {datetime.datetime.now().strftime('%B %d, %Y')}")
             print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## fx: Disable logging ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def disable(self):
-        self._end_time = dt.datetime.now()
+        self._end_time = datetime.datetime.now()
         if self._filetype == "markdown":
             print(f"\n> [!NOTE]\n> - Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
         else:
@@ -262,7 +262,7 @@ class ClassTemplate:
 
         # Set the base path and data date
         self.base_path = os.getcwd()
-        self.data_date = dt.datetime.now().strftime("%B %Y")
+        self.data_date = datetime.datetime.now().strftime("%B %Y")
 
         # Create an prj_meta variable calling the function using the part and version variables from the initialization
         self.prj_meta = self.project_metadata(silent = False)
@@ -334,7 +334,7 @@ class ClassTemplate:
             prj_meta = json.load(f)
 
         # Set the metadata date as the current date
-        current_date = dt.date.today()
+        current_date = datetime.date.today()
         prj_meta["date"] = current_date.strftime("%Y-%m-%d")
 
         # Set the metadata version:
